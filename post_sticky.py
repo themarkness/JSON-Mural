@@ -36,9 +36,22 @@ def get_session():
     return mural
 
 
-def post_sticky(session, text, x=0, y=0):
+# Event storming colour map (8-char hex with alpha)
+COLOURS = {
+    "event": "#FF6B35FF",       # Orange
+    "command": "#4A90D9FF",     # Blue
+    "aggregate": "#F5D547FF",   # Yellow
+    "readmodel": "#7BC67EFF",   # Green
+    "policy": "#9B59B6FF",      # Purple
+    "external": "#FF69B4FF",    # Pink
+}
+
+
+def post_sticky(session, text, x=0, y=0, colour=None):
     url = f"https://app.mural.co/api/public/v1/murals/{mural_id}/widgets/sticky-note"
     body = {"x": x, "y": y, "text": text, "shape": "rectangle"}
+    if colour:
+        body["style"] = {"backgroundColor": COLOURS.get(colour, colour)}
     resp = session.post(url, json=body)
     print(f"Status: {resp.status_code}")
     print(f"Response: {resp.text}")
@@ -52,8 +65,9 @@ if __name__ == "__main__":
     parser.add_argument("text")
     parser.add_argument("--x", type=int, default=0)
     parser.add_argument("--y", type=int, default=0)
+    parser.add_argument("--colour", choices=list(COLOURS.keys()), default=None)
     args = parser.parse_args()
 
     session = get_session()
-    result = post_sticky(session, args.text, args.x, args.y)
+    result = post_sticky(session, args.text, args.x, args.y, args.colour)
     print(f"Created sticky: {json.dumps(result, indent=2)}")
