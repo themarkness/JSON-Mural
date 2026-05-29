@@ -1,0 +1,24 @@
+[
+  {"type": "actor", "text": "Engagement Manager"},
+  {"type": "actor", "text": "RP Service Team"},
+  {"type": "actor", "text": "Engagement Manager"},
+
+  {"type": "readmodel", "text": "Onboarding checklist"},
+  {"type": "command", "text": "Service start request sent to Onboarding"},
+  {"type": "event", "text": "Request received"},
+  {"type": "readmodel", "text": "Service card template"},
+  {"type": "command", "text": "Copy template & send onboarding manual"},
+  {"type": "event", "text": "Onboarding manual sent to service team"},
+  {"type": "command", "text": "Fill in details in manual"},
+  {"type": "event", "text": "Service name added in manual"},
+  {"type": "command", "text": "Review draft of onboarding manual"},
+  {"type": "event", "text": "Manual reviewed"},
+
+  {"type": "policy", "text": "If incomplete - request more info via email"},
+
+  {"type": "system", "text": "Google Docs"},
+  {"type": "system", "text": "ServiceNow"},
+
+  {"type": "hotspot", "text": "Sent as afterthought - no version control", "x": 2500, "y": 300},
+  {"type": "hotspot", "text": "This takes 5 days", "x": 2750, "y": 300}
+]

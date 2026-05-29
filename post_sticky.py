@@ -40,10 +40,11 @@ def get_session():
 COLOURS = {
     "event": "#FF6B35FF",       # Orange
     "command": "#4A90D9FF",     # Blue
-    "aggregate": "#F5D547FF",   # Yellow
+    "actor": "#F5D547FF",       # Yellow
     "readmodel": "#7BC67EFF",   # Green
     "policy": "#9B59B6FF",      # Purple
-    "external": "#FF69B4FF",    # Pink
+    "system": "#FF69B4FF",      # Pink
+    "hotspot": "#FF0000FF",     # Red
 }
 
 
