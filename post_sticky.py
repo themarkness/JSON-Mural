@@ -47,7 +47,13 @@ def post_sticky(session, text, x=0, y=0):
 
 
 if __name__ == "__main__":
-    text = sys.argv[1] if len(sys.argv) > 1 else "Hello from script"
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("text")
+    parser.add_argument("--x", type=int, default=0)
+    parser.add_argument("--y", type=int, default=0)
+    args = parser.parse_args()
+
     session = get_session()
-    result = post_sticky(session, text)
+    result = post_sticky(session, args.text, args.x, args.y)
     print(f"Created sticky: {json.dumps(result, indent=2)}")
