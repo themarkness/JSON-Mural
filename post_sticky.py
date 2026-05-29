@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import time
 import webbrowser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from requests_oauthlib import OAuth2Session
@@ -15,7 +16,11 @@ mural_id = os.environ["MURAL_ID"]
 redirect_uri = "http://127.0.0.1:8000/"
 authorization_base_url = "https://app.mural.co/api/public/v1/authorization/oauth2/"
 token_url = "https://app.mural.co/api/public/v1/authorization/oauth2/token"
+refresh_url = "https://app.mural.co/api/public/v1/authorization/oauth2/refresh"
 scopes = ["murals:read murals:write"]
+
+TOKEN_FILE = os.path.join(os.path.dirname(__file__), ".token.json")
+RATE_LIMIT_DELAY = 0.5  # seconds between API calls
 
 
 class ServerHandler(BaseHTTPRequestHandler):
@@ -25,14 +30,36 @@ class ServerHandler(BaseHTTPRequestHandler):
         self.server.auth_response = self.requestline[4:-9]
 
 
+def save_token(token):
+    with open(TOKEN_FILE, "w") as f:
+        json.dump(token, f)
+
+
+def load_token():
+    if os.path.exists(TOKEN_FILE):
+        with open(TOKEN_FILE) as f:
+            return json.load(f)
+    return None
+
+
 def get_session():
+    token = load_token()
+    if token:
+        mural = OAuth2Session(client_id, token=token, scope=scopes, redirect_uri=redirect_uri)
+        # Test if token still works
+        resp = mural.get("https://app.mural.co/api/public/v1/users/me")
+        if resp.ok:
+            return mural
+
+    # Fresh auth flow
     httpd = HTTPServer(("127.0.0.1", 8000), ServerHandler)
     mural = OAuth2Session(client_id, scope=scopes, redirect_uri=redirect_uri)
     authorization_url, state = mural.authorization_url(authorization_base_url)
     webbrowser.open(authorization_url)
     httpd.handle_request()
     redirect_response = "https://127.0.0.1:8000" + httpd.auth_response
-    mural.fetch_token(token_url, client_secret=client_secret, authorization_response=redirect_response)
+    token = mural.fetch_token(token_url, client_secret=client_secret, authorization_response=redirect_response)
+    save_token(token)
     return mural
 
 
@@ -54,7 +81,13 @@ def post_sticky(session, text, x=0, y=0, colour=None):
     if colour:
         body["style"] = {"backgroundColor": COLOURS.get(colour, colour)}
     resp = session.post(url, json=body)
+    if resp.status_code == 429:
+        retry_after = int(resp.headers.get("Retry-After", 5))
+        print(f"Rate limited. Waiting {retry_after}s...")
+        time.sleep(retry_after)
+        resp = session.post(url, json=body)
     resp.raise_for_status()
+    time.sleep(RATE_LIMIT_DELAY)
     return resp.json()
 
 
