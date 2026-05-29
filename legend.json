@@ -1,0 +1,9 @@
+[
+  {"type": "event", "text": "Event\nThings that happened — \"Config submitted\""},
+  {"type": "command", "text": "Command\nActions someone took — \"Submit config\""},
+  {"type": "actor", "text": "Actor\nWho did it — \"Onboarding\", \"RP\""},
+  {"type": "readmodel", "text": "Read Model\nInfo needed to make a decision — \"Checklist\""},
+  {"type": "policy", "text": "Policy\nBusiness rules / automated reactions"},
+  {"type": "system", "text": "System\nTools involved — \"ServiceNow\", \"Slack\""},
+  {"type": "hotspot", "text": "Hotspot\nProblems / pain points — \"This takes 5 days\""}
+]
