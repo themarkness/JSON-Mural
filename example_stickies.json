@@ -1,0 +1,5 @@
+[
+  {"text": "Register user", "x": 100, "y": 200, "colour": "command"},
+  {"text": "User registered", "x": 300, "y": 200, "colour": "event"},
+  {"text": "User", "x": 200, "y": 400, "colour": "aggregate"}
+]

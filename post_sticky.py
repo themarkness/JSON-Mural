@@ -53,21 +53,34 @@ def post_sticky(session, text, x=0, y=0, colour=None):
     if colour:
         body["style"] = {"backgroundColor": COLOURS.get(colour, colour)}
     resp = session.post(url, json=body)
-    print(f"Status: {resp.status_code}")
-    print(f"Response: {resp.text}")
     resp.raise_for_status()
     return resp.json()
+
+
+def post_stickies(session, stickies):
+    for s in stickies:
+        result = post_sticky(session, s["text"], s.get("x", 0), s.get("y", 0), s.get("colour"))
+        print(f"Created: {s['text']}")
+    return len(stickies)
 
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("text")
+    parser.add_argument("text", nargs="?", default=None)
     parser.add_argument("--x", type=int, default=0)
     parser.add_argument("--y", type=int, default=0)
     parser.add_argument("--colour", choices=list(COLOURS.keys()), default=None)
+    parser.add_argument("--file", help="JSON file with array of stickies")
     args = parser.parse_args()
 
     session = get_session()
-    result = post_sticky(session, args.text, args.x, args.y, args.colour)
-    print(f"Created sticky: {json.dumps(result, indent=2)}")
+
+    if args.file:
+        with open(args.file) as f:
+            stickies = json.load(f)
+        count = post_stickies(session, stickies)
+        print(f"Posted {count} stickies")
+    else:
+        result = post_sticky(session, args.text, args.x, args.y, args.colour)
+        print(f"Created sticky: {result['id']}")
