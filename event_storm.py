@@ -1,6 +1,9 @@
 import json
+import os
 import sys
 from post_sticky import get_session, post_sticky, COLOURS
+
+LEGEND_FILE = os.path.join(os.path.dirname(__file__), "legend.json")
 
 # Swim lane y-positions (top to bottom)
 # readmodel, command, event share the SAME row (the main timeline)
@@ -16,6 +19,19 @@ LANES = {
 
 STICKY_WIDTH = 200
 GAP = 50
+
+
+LEGEND_X = -300
+
+
+def post_legend(session):
+    with open(LEGEND_FILE) as f:
+        items = json.load(f)
+    for i, item in enumerate(items):
+        y = i * (STICKY_WIDTH + GAP)
+        colour = item["type"] if item["type"] != "hotspot" else "hotspot"
+        post_sticky(session, item["text"], LEGEND_X, y, colour)
+    print(f"Posted legend ({len(items)} items)")
 
 
 def layout_event_storm(steps):
@@ -71,15 +87,19 @@ def layout_event_storm(steps):
 
 
 if __name__ == "__main__":
-    file = sys.argv[1] if len(sys.argv) > 1 else "event_storm.json"
-    with open(file) as f:
-        steps = json.load(f)
-
-    stickies = layout_event_storm(steps)
     session = get_session()
 
-    for s in stickies:
-        post_sticky(session, s["text"], s["x"], s["y"], s["colour"])
-        print(f"Posted: [{s['colour']}] {s['text']}")
+    print("Populating the board with the event storm legend...")
+    post_legend(session)
 
-    print(f"\nDone — {len(stickies)} stickies posted")
+    answer = input("\nDo you want to populate the board with the example event storm? (y/n): ").strip().lower()
+    if answer == "y":
+        with open("example_event_storm.json") as f:
+            steps = json.load(f)
+        stickies = layout_event_storm(steps)
+        for s in stickies:
+            post_sticky(session, s["text"], s["x"], s["y"], s["colour"])
+            print(f"Posted: [{s['colour']}] {s['text']}")
+        print(f"\nDone — {len(stickies)} stickies posted")
+    else:
+        print("\nCustom event storm input coming soon. For now, edit example_event_storm.json and re-run.")
