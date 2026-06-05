@@ -48,7 +48,8 @@ You'll be prompted to choose:
 
 1. **Post a single sticky** — specify text, position, and hex colour
 2. **Post an event storm** — from a JSON file (or the included example)
-3. **Re-run setup** — update credentials or board ID
+3. **Generate event storm JSON** — prints an LLM prompt you can use to convert a process doc into valid JSON for this tool
+4. **Re-run setup** — update credentials or board ID
 
 ## Event Storm Mode
 
@@ -96,6 +97,12 @@ Row 4 (y=600)  │ system   │ system   │
 - Items are placed left-to-right in the order they appear
 - Use `"column": N` to explicitly position a sticky at a specific column
 - Hotspots require `"x"` and `"y"` fields
+
+## Generating Event Storm JSON from a Document
+
+Don't have your process in JSON yet? Option 3 in the CLI prints a ready-made prompt you can paste into any LLM (ChatGPT, Claude, etc.) along with your process document. The LLM will return valid JSON that works directly with this tool.
+
+The prompt is also available at `prompts/doc_to_event_storm.md` if you want to use it outside the CLI.
 
 ## Auth
 

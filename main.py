@@ -5,6 +5,7 @@ from post_sticky import get_session, post_sticky, post_stickies, COLOURS
 from event_storm import layout_event_storm, post_legend
 
 EXAMPLE_FILE = os.path.join(os.path.dirname(__file__), "example_event_storm.json")
+PROMPT_FILE = os.path.join(os.path.dirname(__file__), "prompts", "doc_to_event_storm.md")
 
 
 def do_single_sticky(session):
@@ -51,7 +52,8 @@ def main():
     print("What would you like to do?\n")
     print("  1. Post a single sticky")
     print("  2. Post an event storm")
-    print("  3. Re-run setup")
+    print("  3. Generate event storm JSON (show LLM prompt)")
+    print("  4. Re-run setup")
 
     choice = input("\nChoice [1]: ").strip() or "1"
 
@@ -60,6 +62,9 @@ def main():
     elif choice == "2":
         do_event_storm(session)
     elif choice == "3":
+        with open(PROMPT_FILE) as f:
+            print(f"\n{f.read()}")
+    elif choice == "4":
         from setup import run_setup
         run_setup()
     else:
