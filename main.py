@@ -14,8 +14,7 @@ def do_single_sticky(session):
         return
     x = int(input("x position [0]: ").strip() or "0")
     y = int(input("y position [0]: ").strip() or "0")
-    print(f"\nColours: {', '.join(COLOURS.keys())}")
-    colour = input("Colour [event]: ").strip() or "event"
+    colour = input("Hex colour [#FFFF00FF]: ").strip() or "#FFFF00FF"
     result = post_sticky(session, text, x, y, colour)
     print(f"\n✓ Posted sticky: {result['id']}")
 
@@ -42,16 +41,6 @@ def do_event_storm(session):
     print(f"\n✓ Done — {len(stickies)} stickies posted")
 
 
-def do_batch_stickies(session):
-    filepath = input("Path to stickies JSON: ").strip()
-    if not filepath or not os.path.exists(filepath):
-        print(f"File not found: {filepath}")
-        return
-    with open(filepath) as f:
-        stickies = json.load(f)
-    count = post_stickies(session, stickies)
-    print(f"\n✓ Posted {count} stickies")
-
 
 def main():
     print("=== Mural CLI ===\n")
@@ -60,20 +49,17 @@ def main():
     print("✓ Authenticated\n")
 
     print("What would you like to do?\n")
-    print("  1. Post an event storm")
-    print("  2. Post a single sticky")
-    print("  3. Post batch stickies from JSON")
-    print("  4. Re-run setup")
+    print("  1. Post a single sticky")
+    print("  2. Post an event storm")
+    print("  3. Re-run setup")
 
     choice = input("\nChoice [1]: ").strip() or "1"
 
     if choice == "1":
-        do_event_storm(session)
-    elif choice == "2":
         do_single_sticky(session)
+    elif choice == "2":
+        do_event_storm(session)
     elif choice == "3":
-        do_batch_stickies(session)
-    elif choice == "4":
         from setup import run_setup
         run_setup()
     else:

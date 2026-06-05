@@ -96,7 +96,7 @@ def post_sticky(session, text, x=0, y=0, colour=None):
     url = f"https://app.mural.co/api/public/v1/murals/{mural_id}/widgets/sticky-note"
     body = {"x": x, "y": y, "text": text, "shape": "rectangle"}
     if colour:
-        hex_colour = COLOURS.get(colour)
+        hex_colour = COLOURS.get(colour) or (colour if colour.startswith("#") else None)
         if hex_colour:
             body["style"] = {"backgroundColor": hex_colour}
     resp = session.post(url, json=body)

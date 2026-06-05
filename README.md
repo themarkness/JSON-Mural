@@ -1,6 +1,8 @@
-# Mural Event Storming Tool
+# Mural Sticky Poster
 
-Post event storming stickies to a MURAL board from a JSON file.
+A CLI tool for product teams to post stickies to a MURAL board from the command line. Useful for quickly populating boards with structured data. An included example is a process 'Event Storm'.
+
+While the nature of event storming and many other visualisation techniques is collaborative, this tool offers a quick start, aiming to get the map on the board and let the discussion take centre stage.
 
 ## Setup
 
@@ -8,11 +10,11 @@ Post event storming stickies to a MURAL board from a JSON file.
 
 1. Go to https://developers.mural.co and sign in
 2. Navigate to **Your apps** → **Create new app**
-3. Give it a name (e.g. "Event Storm CLI")
+3. Give it a name (e.g. "Sticky Poster CLI")
 4. Set the redirect URI to exactly: `http://127.0.0.1:8000/`
 5. Under scopes, enable `murals:read` and `murals:write`
 6. Save the app
-7. Copy the **Client ID** and **Client Secret** somehwere so you can add into your `.env` file later
+7. Copy the **Client ID** and **Client Secret** somewhere so you can add into your `.env` file later
 
 ### Setup the python environment
 
@@ -21,7 +23,6 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-
 
 ### Configure credentials
 
@@ -45,12 +46,15 @@ python main.py
 
 You'll be prompted to choose:
 
-1. **Post an event storm** — from a JSON file (or the included example)
-2. **Post a single sticky** — with text, position, and colour
-3. **Post batch stickies** — from a JSON array
-4. **Re-run setup** — update credentials or board ID
+1. **Post a single sticky** — specify text, position, and hex colour
+2. **Post an event storm** — from a JSON file (or the included example)
+3. **Re-run setup** — update credentials or board ID
 
-## Sticky Colours
+## Event Storm Mode
+
+When posting an event storm, stickies are automatically laid out in swim lanes based on their type:
+
+### Sticky Types
 
 | Type       | Colour | Use for                                         |
 |------------|--------|-------------------------------------------------|
@@ -62,9 +66,7 @@ You'll be prompted to choose:
 | `system`   | Pink   | Tools involved — "ServiceNow", "Slack"          |
 | `hotspot`  | Red    | Problems / pain points — "This takes 5 days"    |
 
-## Layout
-
-The event storm is laid out in horizontal rows:
+### Layout
 
 ```
 Row 1 (y=0)    │ actor    │ actor    │ actor    │
@@ -77,7 +79,7 @@ Row 4 (y=600)  │ system   │ system   │
 - **actor, policy, system** each have their own row and flow independently
 - **hotspot** is placed ad hoc with explicit `x` and `y` near the related sticky
 
-## JSON Schema
+### JSON Schema
 
 ```json
 [
