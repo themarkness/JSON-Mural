@@ -17,7 +17,7 @@ def extract_mural_id(input_str):
 
 
 def run_setup():
-    print("=== Mural Event Storm Setup ===\n")
+    print("=== Mural Sticky Poster Setup ===\n")
 
     # Load existing values as defaults
     existing = {}
@@ -63,7 +63,7 @@ def run_setup():
 
     print(f"\n✓ Config saved to .env")
     print(f"  Mural ID: {mural_id}")
-    print(f"\nRun `python event_storm.py` to get started.")
+    print(f"\nRun `python main.py` to get started.")
 
 
 if __name__ == "__main__":
