@@ -1,8 +1,8 @@
 # Mural Sticky Poster
 
-A CLI tool for product teams to post stickies to a MURAL board from the command line. Useful for quickly populating boards with structured data. An included example is a process 'Event Storm'.
+A CLI tool for product teams (or anyone) to post stickies to a MURAL board from the command line. Useful for quickly populating boards with structured data. An included example is a process 'Event Storm'.
 
-While the nature of event storming and many other visualisation techniques is collaborative, this tool offers a quick start, aiming to get the map on the board and let the discussion take centre stage.
+While the nature of event storming and many other visualisation techniques is collaborative, this tool offers a quick start, aiming to get something that someone has worked on in silo, like a text doc into a visual tool so the collaborative discussion can take centre stage.
 
 ## Setup
 
@@ -43,19 +43,26 @@ Config is saved to `.env`. Setup runs automatically on first use if `.env` is mi
 ```bash
 python main.py
 ```
+On first run, a browser window opens for MURAL OAuth login.
 
-You'll be prompted to choose:
+You can then return to the CLI and you  will be prompted to choose:
 
 1. **Post a single sticky** — specify text, position, and hex colour
 2. **Post an event storm** — from a JSON file (or the included example)
 3. **Generate event storm JSON** — prints an LLM prompt you can use to convert a process doc into valid JSON for this tool
 4. **Re-run setup** — update credentials or board ID
 
-## Event Storm Mode
 
-When posting an event storm, stickies are automatically laid out in swim lanes based on their type:
+## Post a single sticky
+Ronseal - designed to make sure this thing is doing the thing it's supposed to do
 
-### Sticky Types
+## Event Storm mode
+
+[Event storming](https://www.eventstorming.com/) is a colaborative process to explore a particular domain. Useful in software design and business modelling. The original intention for this tool was to help take some process docs that are currently written up in a variety of places in Confluence and map it in Mural to allow for a more collaborative conversation about the process we were mapping. Easing the initial setup of the workshop.
+
+When posting an event storm, stickies are automatically laid out an order based on their type:
+
+### Sticky types
 
 | Type       | Colour | Use for                                         |
 |------------|--------|-------------------------------------------------|
@@ -98,12 +105,11 @@ Row 4 (y=600)  │ system   │ system   │
 - Use `"column": N` to explicitly position a sticky at a specific column
 - Hotspots require `"x"` and `"y"` fields
 
-## Generating Event Storm JSON from a Document
+## Generating Event Storm JSON from a document
 
 Don't have your process in JSON yet? Option 3 in the CLI prints a ready-made prompt you can paste into any LLM (ChatGPT, Claude, etc.) along with your process document. The LLM will return valid JSON that works directly with this tool.
 
 The prompt is also available at `prompts/doc_to_event_storm.md` if you want to use it outside the CLI.
 
-## Auth
-
-On first run, a browser window opens for MURAL OAuth login.
+## Other modes
+The tool is designed to be extensible to other types of visualisations. What's been implemented and some ideas for future iteration can be found in [project.md](/project.md)
