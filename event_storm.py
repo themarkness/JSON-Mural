@@ -1,6 +1,5 @@
 import json
 import os
-import sys
 from post_sticky import get_session, post_sticky, COLOURS
 
 LEGEND_FILE = os.path.join(os.path.dirname(__file__), "legend.json")
@@ -86,20 +85,4 @@ def layout_event_storm(steps):
     return stickies
 
 
-if __name__ == "__main__":
-    session = get_session()
 
-    print("Populating the board with the event storm legend...")
-    post_legend(session)
-
-    answer = input("\nDo you want to populate the board with the example event storm? (y/n): ").strip().lower()
-    if answer == "y":
-        with open("example_event_storm.json") as f:
-            steps = json.load(f)
-        stickies = layout_event_storm(steps)
-        for s in stickies:
-            post_sticky(session, s["text"], s["x"], s["y"], s["colour"])
-            print(f"Posted: [{s['colour']}] {s['text']}")
-        print(f"\nDone — {len(stickies)} stickies posted")
-    else:
-        print("\nCustom event storm input coming soon. For now, edit example_event_storm.json and re-run.")

@@ -23,31 +23,32 @@ pip install -r requirements.txt
 ```
 
 
-### Add Mural info to .env
+### Configure credentials
 
-Create a `.env` file:
+Run the interactive setup:
 
-```
-MURAL_CLIENT_ID=<your-client-id>
-MURAL_CLIENT_SECRET=<your-client-secret>
-MURAL_ID=<your-mural-id>
+```bash
+python setup.py
 ```
 
-The `MURAL_ID` is in the format `workspacename.timestamp` (e.g. `myworkspace.1780064070379`). You can find it by listing your murals via the API.
+It will prompt for:
+- **Client ID** and **Client Secret** from your MURAL app
+- **Mural board URL or ID** — paste the full board URL (e.g. `https://app.mural.co/t/myworkspace/m/myworkspace/myworkspace.1780064070379/...`) and it will extract the ID automatically, or enter the ID directly (e.g. `myworkspace.1780064070379`)
+
+Config is saved to `.env`. Setup runs automatically on first use if `.env` is missing.
 
 ## Usage
 
-### Post a single sticky
-
 ```bash
-python post_sticky.py "Something happened" --x 100 --y 200 --colour event
+python main.py
 ```
 
-### Post an event storm
+You'll be prompted to choose:
 
-```bash
-python event_storm.py example_event_storm.json
-```
+1. **Post an event storm** — from a JSON file (or the included example)
+2. **Post a single sticky** — with text, position, and colour
+3. **Post batch stickies** — from a JSON array
+4. **Re-run setup** — update credentials or board ID
 
 ## Sticky Colours
 

@@ -5,13 +5,27 @@ import time
 import webbrowser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from requests_oauthlib import OAuth2Session
+from oauthlib.oauth2.rfc6749.errors import TokenExpiredError
 from dotenv import load_dotenv
 
-load_dotenv()
+ENV_FILE = os.path.join(os.path.dirname(__file__), ".env")
 
-client_id = os.environ["MURAL_CLIENT_ID"]
-client_secret = os.environ["MURAL_CLIENT_SECRET"]
-mural_id = os.environ["MURAL_ID"]
+
+def load_config():
+    load_dotenv(ENV_FILE)
+    missing = [k for k in ("MURAL_CLIENT_ID", "MURAL_CLIENT_SECRET", "MURAL_ID") if not os.environ.get(k)]
+    if missing:
+        print("Config not found. Running setup...\n")
+        from setup import run_setup
+        run_setup()
+        load_dotenv(ENV_FILE, override=True)
+        missing = [k for k in ("MURAL_CLIENT_ID", "MURAL_CLIENT_SECRET", "MURAL_ID") if not os.environ.get(k)]
+        if missing:
+            sys.exit("Setup incomplete. Please run `python setup.py` to configure.")
+    return os.environ["MURAL_CLIENT_ID"], os.environ["MURAL_CLIENT_SECRET"], os.environ["MURAL_ID"]
+
+
+client_id, client_secret, mural_id = load_config()
 
 redirect_uri = "http://127.0.0.1:8000/"
 authorization_base_url = "https://app.mural.co/api/public/v1/authorization/oauth2/"
@@ -46,10 +60,12 @@ def get_session():
     token = load_token()
     if token:
         mural = OAuth2Session(client_id, token=token, scope=scopes, redirect_uri=redirect_uri)
-        # Test if token still works
-        resp = mural.get("https://app.mural.co/api/public/v1/users/me")
-        if resp.ok:
-            return mural
+        try:
+            resp = mural.get("https://app.mural.co/api/public/v1/users/me")
+            if resp.ok:
+                return mural
+        except TokenExpiredError:
+            pass
 
     # Fresh auth flow
     httpd = HTTPServer(("127.0.0.1", 8000), ServerHandler)
@@ -72,6 +88,7 @@ COLOURS = {
     "policy": "#9B59B6FF",      # Purple
     "system": "#FF69B4FF",      # Pink
     "hotspot": "#FF0000FF",     # Red
+    "aggregate": "#F0E68CFF",   # Khaki
 }
 
 
@@ -79,7 +96,9 @@ def post_sticky(session, text, x=0, y=0, colour=None):
     url = f"https://app.mural.co/api/public/v1/murals/{mural_id}/widgets/sticky-note"
     body = {"x": x, "y": y, "text": text, "shape": "rectangle"}
     if colour:
-        body["style"] = {"backgroundColor": COLOURS.get(colour, colour)}
+        hex_colour = COLOURS.get(colour)
+        if hex_colour:
+            body["style"] = {"backgroundColor": hex_colour}
     resp = session.post(url, json=body)
     if resp.status_code == 429:
         retry_after = int(resp.headers.get("Retry-After", 5))
@@ -98,23 +117,4 @@ def post_stickies(session, stickies):
     return len(stickies)
 
 
-if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("text", nargs="?", default=None)
-    parser.add_argument("--x", type=int, default=0)
-    parser.add_argument("--y", type=int, default=0)
-    parser.add_argument("--colour", choices=list(COLOURS.keys()), default=None)
-    parser.add_argument("--file", help="JSON file with array of stickies")
-    args = parser.parse_args()
 
-    session = get_session()
-
-    if args.file:
-        with open(args.file) as f:
-            stickies = json.load(f)
-        count = post_stickies(session, stickies)
-        print(f"Posted {count} stickies")
-    else:
-        result = post_sticky(session, args.text, args.x, args.y, args.colour)
-        print(f"Created sticky: {result['id']}")
