@@ -53,6 +53,14 @@ Post event storming outputs (commands, events, actors, read models, etc.) as col
 - **Customer Journey Map** — phases as columns, touchpoints/emotions/pain points as rows
 - **Wardley Map** — value chain on y-axis, evolution on x-axis
 - **Impact Map** — goal → actors → impacts → deliverables as a tree layout
+- **Assumption Map** — 4-quadrant grid (x-axis: known ↔ unknown, y-axis: important ↔ unimportant). Stickies placed into quadrants: Known & Important, Unknown & Important, Known & Unimportant, Unknown & Unimportant. Prioritise testing assumptions in the Unknown & Important quadrant
+- **Opportunity Solution Tree** — tree layout with desired outcome at the top, branching down into opportunities, then solutions, then experiments. Visualises how discovery work connects back to a target outcome
+- **Now/Next/Later Roadmap** — 3-column layout for prioritisation without committing to dates
+- **RICE/ICE Scoring Matrix** — 2×2 grid (effort vs impact) or ranked list for prioritising opportunities
+- **Empathy Map** — 4-quadrant layout (Says/Thinks/Does/Feels) centred around a persona
+- **Service Blueprint** — horizontal timeline with swim lane rows: customer actions, frontstage, backstage, support processes
+- **Lean Canvas** — 9-box business model layout (problem, solution, key metrics, unique value prop, etc.)
+- **SWOT Analysis** — 4-quadrant grid (Strengths/Weaknesses/Opportunities/Threats)
 
 ### Batch optimisation
 - Investigate MURAL bulk/batch endpoints to reduce API calls
